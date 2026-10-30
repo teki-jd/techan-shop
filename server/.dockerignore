@@ -8,6 +8,12 @@ logs/
 public/uploads/*
 !public/uploads/.gitkeep
 
+# 网页版只在本地测试用，不进镜像：上线形态没有网页后台，
+# 少了这几个文件，首页会显示「这个地址只提供接口」
+public/app.html
+public/app.css
+public/app.js
+
 node_modules/
 
 *.md
