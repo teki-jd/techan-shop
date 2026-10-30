@@ -1,0 +1,167 @@
+<view class="page">
+
+  <view class="tabs">
+    <view class="tab {{tab === 'orders' ? 'on' : ''}}" data-tab="orders" bindtap="switchTab">
+      登记单<text class="badge" wx:if="{{counts.pending}}">{{counts.pending}}</text>
+    </view>
+    <view class="tab {{tab === 'products' ? 'on' : ''}}" data-tab="products" bindtap="switchTab">商品</view>
+    <view class="tab {{tab === 'settings' ? 'on' : ''}}" data-tab="settings" bindtap="switchTab">店铺设置</view>
+  </view>
+
+  <!-- ======================= 登记单 ======================= -->
+  <block wx:if="{{tab === 'orders'}}">
+    <scroll-view class="filters" scroll-x enable-flex>
+      <view wx:for="{{filters}}" wx:key="k" class="chip {{filter === item.k ? 'on' : ''}}"
+            data-k="{{item.k}}" bindtap="onFilter">
+        {{item.n}}<text class="c" wx:if="{{item.c}}">{{item.c}}</text>
+      </view>
+    </scroll-view>
+
+    <view class="empty" wx:if="{{loading}}">加载中…</view>
+    <view class="empty" wx:elif="{{err}}">{{err}}</view>
+
+    <block wx:else>
+      <view class="card order" wx:for="{{orders}}" wx:key="_id">
+        <view class="o-head">
+          <view class="o-no" data-v="{{item.orderNo}}" bindtap="copyText">{{item.orderNo}}</view>
+          <view class="o-status" style="color:{{item.statusColor}};border-color:{{item.statusColor}}">{{item.statusText}}</view>
+        </view>
+
+        <!-- 对方 -->
+        <view class="buyer">
+          <view class="buyer-name">{{item.contact.name}}</view>
+          <view class="buyer-line" data-phone="{{item.contact.phone}}" bindtap="callBuyer">
+            电话 <text class="link">{{item.contact.phone}}</text>
+          </view>
+          <view class="buyer-line" wx:if="{{item.address}}">
+            地址 <text class="addr">{{item.address}}</text>
+          </view>
+        </view>
+
+        <!-- 条目 -->
+        <view class="o-items">
+          <view class="o-item" wx:for="{{item.items}}" wx:for-item="it" wx:key="productId">
+            <text class="o-it-name">{{it.name}}</text>
+            <text class="o-it-qty">{{it.priceText}} × {{it.qty}} = ¥{{it.lineText}}</text>
+          </view>
+        </view>
+
+        <view class="o-money">
+          <text>合计 ¥{{item.amountText}}</text>
+          <text wx:if="{{item.freightText}}"> + 运费 ¥{{item.freightText}}</text>
+          <text class="total">= ¥{{item.totalText}}</text>
+        </view>
+
+        <view class="o-remark" wx:if="{{item.remark}}">对方备注：{{item.remark}}</view>
+        <view class="o-adminnote" wx:if="{{item.adminNote}}">我的留言：{{item.adminNote}}</view>
+        <view class="o-time">{{item.timeText}}</view>
+
+        <view class="o-actions">
+          <view class="btn btn-gray btn-sm" data-id="{{item._id}}" data-note="{{item.adminNote}}" bindtap="note">留言</view>
+          <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" data-freight="{{item.freight}}" bindtap="quote">
+            {{item.status === 'pending' ? '报价运费' : '改运费'}}
+          </view>
+          <view class="btn btn-pri btn-sm" wx:if="{{item.status === 'quoted'}}" data-id="{{item._id}}" bindtap="markPaid">已收款</view>
+          <view class="btn btn-pri btn-sm" wx:if="{{item.status === 'paid'}}" data-id="{{item._id}}" bindtap="markShipped">已发出</view>
+          <view class="btn btn-pri btn-sm" wx:if="{{item.status === 'shipped'}}" data-id="{{item._id}}" bindtap="markDone">完成</view>
+        </view>
+        <view class="o-extra" wx:if="{{item.status !== 'done' && item.status !== 'cancelled'}}"
+              data-id="{{item._id}}" bindtap="cancelOrder">取消这条登记</view>
+      </view>
+
+      <view class="empty" wx:if="{{!orders.length}}">这一栏还没有登记</view>
+    </block>
+  </block>
+
+  <!-- ======================= 商品 ======================= -->
+  <block wx:elif="{{tab === 'products'}}">
+    <view class="add-bar">
+      <button class="btn btn-pri" bindtap="editProduct" data-id="">＋ 新增商品</button>
+    </view>
+
+    <!-- 分类管理 -->
+    <view class="card block cat-card">
+      <view class="h2">商品分类</view>
+      <view class="t-sub" style="margin:4rpx 0 12rpx;">改名后直接点「保存」；删除前要先把分类下的商品移走</view>
+      <view class="cat-row" wx:for="{{cats}}" wx:key="_id">
+        <input class="form-input cat-input" value="{{item.name}}" data-id="{{item._id}}"
+               bindblur="onCatName" placeholder="分类名" placeholder-class="form-ph" />
+        <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" data-name="{{item.name}}" bindtap="saveCat">保存</view>
+        <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="delCat">删</view>
+      </view>
+      <view class="cat-row">
+        <input class="form-input cat-input" value="{{newCat}}" data-k="newCat" bindinput="onSetInput"
+               placeholder="新分类名" placeholder-class="form-ph" />
+        <view class="btn btn-pri btn-sm" bindtap="addCat">添加</view>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{loading}}">加载中…</view>
+    <view class="empty" wx:elif="{{err}}">{{err}}</view>
+
+    <block wx:else>
+      <view class="card prow" wx:for="{{products}}" wx:key="_id">
+        <image wx:if="{{item.cover}}" class="pthumb" src="{{item.cover}}" mode="aspectFill" />
+        <view wx:else class="pthumb ph">{{item.initial}}</view>
+        <view class="pmain">
+          <view class="pname">{{item.name}}</view>
+          <view class="pmeta">{{item.catName || '未分类'}} · ¥{{item.priceText}}/{{item.unit}} · 库存 {{item.stock === null ? '不限' : item.stock}}</view>
+          <view class="prow-btns">
+            <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="editProduct">编辑</view>
+            <view class="switch-wrap">
+              <text class="switch-label">{{item.onSale === false ? '已隐藏' : '在售'}}</text>
+              <switch checked="{{item.onSale !== false}}" color="#B4472E" data-id="{{item._id}}" bindchange="toggleSale" />
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="empty" wx:if="{{!products.length}}">还没有商品，点上面「新增商品」</view>
+    </block>
+  </block>
+
+  <!-- ======================= 设置 ======================= -->
+  <block wx:else>
+    <view class="empty" wx:if="{{loading}}">加载中…</view>
+    <block wx:else>
+      <view class="card block">
+        <view class="form-row">
+          <view class="form-label">店铺名</view>
+          <input class="form-input" value="{{s.shopName}}" data-k="shopName" bindinput="onSetInput"
+                 placeholder="比如 老李家的山货" placeholder-class="form-ph" />
+        </view>
+        <view class="form-row">
+          <view class="form-label">一句话</view>
+          <input class="form-input" value="{{s.slogan}}" data-k="slogan" bindinput="onSetInput"
+                 placeholder="比如 老家直发 · 熟人小单" placeholder-class="form-ph" />
+        </view>
+        <view class="form-row">
+          <view class="form-label">我的手机号</view>
+          <input class="form-input" type="number" value="{{s.phone}}" data-k="phone" bindinput="onSetInput"
+                 placeholder="选填" placeholder-class="form-ph" />
+        </view>
+        <view class="form-row">
+          <view class="form-label">运费说明</view>
+          <input class="form-input" value="{{s.freightNote}}" data-k="freightNote" bindinput="onSetInput"
+                 placeholder="比如 满138元包邮，部分地区需补差价" placeholder-class="form-ph" />
+        </view>
+      </view>
+
+      <view class="card block">
+        <view class="form-label" style="width:auto;">首页公告</view>
+        <textarea class="notice-area" value="{{s.notice}}" data-k="notice" bindinput="onSetInput"
+                  placeholder="写一段话，告诉同事怎么看、怎么联系我" maxlength="200" />
+      </view>
+
+      <view class="save-bar">
+        <button class="btn btn-pri" bindtap="saveSettings">保存设置</button>
+      </view>
+
+      <view class="card block">
+        <view class="h2">小提示</view>
+        <view class="p">· 换手机/换微信登录后如果看不到这个入口，说明你的 openid 变了。在云开发控制台 → 数据库 → settings → 文档 shop → adminOpenids 里加上新 openid（自建服务器版改 data/db.json）。</view>
+        <view class="p">· 图片建议 1:1 或 4:3，宽度 1000px 以内，单张别超过 1MB，加载更快。</view>
+        <view class="p">· 这个版本不涉及线上支付，登记状态由你自己点，够用就好。</view>
+      </view>
+    </block>
+  </block>
+</view>

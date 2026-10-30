@@ -1,0 +1,64 @@
+.order { margin: 20rpx 24rpx; }
+
+.o-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #F5EDE2;
+}
+.o-no { font-size: 24rpx; color: #8C8279; letter-spacing: 1rpx; }
+.o-status {
+  font-size: 22rpx;
+  border: 1rpx solid;
+  border-radius: 20rpx;
+  padding: 2rpx 14rpx;
+}
+
+.o-items { padding: 16rpx 0; }
+.o-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 27rpx;
+  padding: 6rpx 0;
+}
+.o-it-name { color: #2C2723; }
+.o-it-qty { color: #8C8279; font-size: 24rpx; }
+
+.o-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: #B0A79C;
+  padding-bottom: 14rpx;
+}
+
+.o-freight {
+  font-size: 25rpx;
+  color: #5A5249;
+  background: #FBF7F0;
+  border-radius: 10rpx;
+  padding: 12rpx 16rpx;
+}
+.o-note {
+  margin-top: 12rpx;
+  font-size: 23rpx;
+  color: #7A2E1C;
+  background: #FDF1EC;
+  border-radius: 10rpx;
+  padding: 12rpx 16rpx;
+}
+
+.o-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14rpx;
+  margin-top: 20rpx;
+}
+
+.foot {
+  text-align: center;
+  color: #B8AFA4;
+  font-size: 22rpx;
+  padding: 20rpx 40rpx 60rpx;
+}

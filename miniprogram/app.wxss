@@ -1,0 +1,109 @@
+page {
+  --bg: #FBF7F0;
+  --card: #FFFFFF;
+  --pri: #B4472E;
+  --pri-soft: #F4E4DC;
+  --gold: #C08A47;
+  --text: #2C2723;
+  --sub: #8C8279;
+  --line: #EEE5D9;
+
+  background: #FBF7F0;
+  color: #2C2723;
+  font-size: 28rpx;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  line-height: 1.6;
+}
+
+view, text, button, input, textarea, scroll-view { box-sizing: border-box; }
+
+.page { min-height: 100vh; padding-bottom: 40rpx; }
+
+/* 卡片 */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 6rpx 24rpx rgba(120, 90, 60, 0.06);
+}
+
+/* 文字 */
+.t-sub { color: #8C8279; font-size: 24rpx; }
+.t-price { color: #B4472E; font-weight: 600; }
+.t-price::before { content: "¥"; font-size: 0.72em; margin-right: 2rpx; }
+.h1 { font-size: 36rpx; font-weight: 600; letter-spacing: 1rpx; }
+.h2 { font-size: 30rpx; font-weight: 600; }
+.divider { height: 1rpx; background: #EEE5D9; margin: 24rpx 0; }
+
+/* 按钮 */
+.btn {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 44rpx;
+  text-align: center;
+  font-size: 30rpx;
+  border: none;
+  padding: 0 40rpx;
+}
+.btn::after { border: none; }
+.btn-pri { background: #B4472E; color: #FFFFFF; }
+.btn-pri[disabled] { background: #D9B9B0; color: #FFF; }
+.btn-ghost { background: #FFFFFF; color: #B4472E; border: 1rpx solid #E7CFC6; }
+.btn-gray { background: #F2ECE3; color: #6B6259; }
+.btn-sm { height: 60rpx; line-height: 60rpx; font-size: 24rpx; border-radius: 30rpx; padding: 0 24rpx; }
+
+/* 状态标签 */
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  background: #F4E4DC;
+  color: #B4472E;
+}
+
+/* 图片占位 */
+.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F4E9DA, #EADCC8);
+  color: #B49A7C;
+  font-size: 44rpx;
+  font-weight: 600;
+}
+
+/* 空状态 */
+.empty {
+  padding: 120rpx 40rpx;
+  text-align: center;
+  color: #A9A096;
+  font-size: 26rpx;
+}
+
+/* 底部固定条 */
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #FFFFFF;
+  border-top: 1rpx solid #EEE5D9;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  z-index: 20;
+}
+
+/* 表单行 */
+.form-row {
+  display: flex;
+  align-items: center;
+  min-height: 96rpx;
+  border-bottom: 1rpx solid #F3EBE0;
+}
+.form-row:last-child { border-bottom: none; }
+.form-label { width: 168rpx; color: #6B6259; font-size: 28rpx; flex: none; }
+.form-input { flex: 1; font-size: 28rpx; }
+.form-ph { color: #BFB6AA; }

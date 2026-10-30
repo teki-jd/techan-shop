@@ -1,0 +1,8 @@
+# 只提交代码，不提交这些
+.env
+data/db.json
+data/db.json.tmp
+logs/
+public/uploads/*
+!public/uploads/.gitkeep
+node_modules/

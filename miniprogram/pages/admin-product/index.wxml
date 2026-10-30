@@ -1,0 +1,93 @@
+<view class="page" style="padding-bottom:60rpx;">
+  <view class="empty" wx:if="{{loading}}">加载中…</view>
+
+  <block wx:else>
+    <view class="card block">
+      <view class="form-row">
+        <view class="form-label">分类</view>
+        <input class="form-input" value="{{p.name}}" data-k="name" bindinput="onInput"
+               placeholder="比如 野生黑木耳" placeholder-class="form-ph" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">分类</view>
+        <picker class="form-input" mode="selector" range="{{catNames}}" value="{{catIndex}}" bindchange="onCat">
+          <view class="{{catNames.length ? '' : 'form-ph'}}">
+            {{catNames.length ? catNames[catIndex] : '还没有分类，先去数据库建一个'}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">价格</view>
+        <input class="form-input" type="digit" value="{{p.price}}" data-k="price" bindinput="onInput"
+               placeholder="单位是元，可填 38.5" placeholder-class="form-ph" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">计价单位</view>
+        <input class="form-input" value="{{p.unit}}" data-k="unit" bindinput="onInput"
+               placeholder="份 / 袋(250g) / 箱(5斤)" placeholder-class="form-ph" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">库存</view>
+        <input class="form-input" type="number" value="{{p.stock}}" data-k="stock" bindinput="onInput"
+               placeholder="留空表示不限" placeholder-class="form-ph" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">标签</view>
+        <input class="form-input" value="{{p.tagsText}}" data-k="tagsText" bindinput="onInput"
+               placeholder="用逗号分隔，比如 自家晒，干货" placeholder-class="form-ph" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">排序</view>
+        <input class="form-input" type="number" value="{{p.sort}}" data-k="sort" bindinput="onInput"
+               placeholder="数字越大越靠前" placeholder-class="form-ph" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">在售展示</view>
+        <switch checked="{{p.onSale}}" color="#B4472E" bindchange="onSale" />
+      </view>
+    </view>
+
+    <!-- 封面 -->
+    <view class="card block">
+      <view class="h2">封面图</view>
+      <view class="t-sub" style="margin:6rpx 0 18rpx;">列表里显示这一张，建议 1:1</view>
+      <view class="cover-wrap">
+        <image wx:if="{{p.cover}}" class="cover" src="{{p.cover}}" mode="aspectFill" />
+        <view wx:else class="cover ph" bindtap="pickCover">＋</view>
+        <view class="cover-tip" bindtap="pickCover">{{p.cover ? '点击更换封面' : '点击上传封面'}}</view>
+      </view>
+    </view>
+
+    <!-- 图集 -->
+    <view class="card block">
+      <view class="h2">详情图（最多 9 张）</view>
+      <view class="t-sub" style="margin:6rpx 0 18rpx;">点一下某张图，就把它设成封面</view>
+      <view class="grid">
+        <view class="cell" wx:for="{{p.images}}" wx:key="*this" data-i="{{index}}" bindtap="useAsCover">
+          <image class="cell-img" src="{{item}}" mode="aspectFill" />
+          <view class="cell-del" data-i="{{index}}" catchtap="removeImage">×</view>
+        </view>
+        <view class="cell add" bindtap="addImages" wx:if="{{p.images.length < 9}}">＋</view>
+      </view>
+    </view>
+
+    <!-- 描述 -->
+    <view class="card block">
+      <view class="h2">介绍</view>
+      <textarea class="desc-area" value="{{p.desc}}" data-k="desc" bindinput="onInput"
+                placeholder="产地、口感、怎么存、怎么吃，写清楚能少回很多微信" maxlength="2000" />
+    </view>
+
+    <view class="btn-bar">
+      <button class="btn btn-pri" bindtap="save" disabled="{{saving}}">{{saving ? '保存中…' : '保存'}}</button>
+      <button class="btn btn-gray" wx:if="{{id}}" bindtap="del">删除</button>
+    </view>
+  </block>
+</view>

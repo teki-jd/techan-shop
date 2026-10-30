@@ -1,0 +1,41 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/detail/index",
+    "pages/checkout/index",
+    "pages/orders/index",
+    "pages/mine/index",
+    "pages/admin/index",
+    "pages/admin-product/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FBF7F0",
+    "navigationBarTitleText": "家乡特产",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FBF7F0"
+  },
+  "tabBar": {
+    "color": "#8C8279",
+    "selectedColor": "#B4472E",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "目录"
+      },
+      {
+        "pagePath": "pages/orders/index",
+        "text": "登记记录"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

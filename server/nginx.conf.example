@@ -1,0 +1,54 @@
+# Nginx 反向代理配置
+# 域名已填好：mjd-tcd.tearth.cn（不用再改）
+# 放到 /etc/nginx/conf.d/techan.conf
+#
+# 顺序很重要：先只放这段 HTTP 的，证书由 certbot 自动加进来，不要手写 443
+#   1) nginx -t && systemctl reload nginx
+#   2) certbot --nginx -d mjd-tcd.tearth.cn --redirect
+#   3) curl https://mjd-tcd.tearth.cn/api/health
+# certbot 会自动复制一份 443 配置并写入证书路径，这个文件不用再动
+#
+# 如果服务器上装了宝塔面板：不用这个文件，在面板里加一个站点 →
+# 反向代理到 http://127.0.0.1:3000 → SSL 一键申请 Let's Encrypt 即可。
+
+server {
+    listen 80;
+    server_name mjd-tcd.tearth.cn;
+
+    # 图片上传走 JSON base64，body 要放大（单张上限 6MB → base64 约 8MB）
+    client_max_body_size 10m;
+
+    # 后端只监听 127.0.0.1:3000，不对外暴露
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 30s;
+    }
+
+    # 图片可以长缓存（文件名带随机串，不会覆盖）
+    location /uploads/ {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        expires 365d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    access_log /var/log/nginx/techan.access.log;
+    error_log  /var/log/nginx/techan.error.log;
+}
+
+# 证书申请好之后，certbot 会自动往这个文件里补一段 443 的 server 块，
+# 大致长这样（不要手写，仅作核对用）：
+#
+# server {
+#     listen 443 ssl http2;
+#     server_name mjd-tcd.tearth.cn;
+#     ssl_certificate     /etc/letsencrypt/live/mjd-tcd.tearth.cn/fullchain.pem;   # 注意是 fullchain
+#     ssl_certificate_key /etc/letsencrypt/live/mjd-tcd.tearth.cn/privkey.pem;
+#     ...location 部分和上面一致...
+# }

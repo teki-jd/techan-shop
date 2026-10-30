@@ -1,0 +1,14 @@
+{
+  "name": "techan-shop-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "老家特产小铺 · 自建服务器后端（零依赖）",
+  "main": "index.js",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "DEV_MODE=1 node index.js"
+  }
+}

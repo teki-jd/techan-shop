@@ -1,0 +1,77 @@
+<view class="page">
+
+  <!-- 公告：置顶一条，单行省地方；点一下看全文 -->
+  <view class="notice-bar" wx:if="{{s.notice}}" bindtap="showNotice">
+    <text class="nb-dot">·</text>
+    <text class="nb-txt">{{s.notice}}</text>
+  </view>
+
+  <!-- 店铺头部 -->
+  <view class="hero">
+    <view class="hero-name">{{s.shopName || '老家特产'}}</view>
+    <view class="hero-slogan">{{s.slogan || '老家直发 · 熟人小单'}}</view>
+  </view>
+
+  <!-- 初始化引导 -->
+  <view class="card init" wx:if="{{needInit}}">
+    <view class="h2">还没有初始化</view>
+    <view class="t-sub" style="margin:8rpx 0 24rpx;">首次使用点一下，把店铺建起来。商品和分类之后在后台自己加。</view>
+    <button class="btn btn-pri" bindtap="initShop">初始化店铺数据</button>
+  </view>
+
+  <!-- 分类 -->
+  <scroll-view class="cats" scroll-x enable-flex wx:if="{{cats.length > 1}}">
+    <view class="cat {{active === 'all' ? 'on' : ''}}" data-id="all" bindtap="onCat">全部</view>
+    <view wx:for="{{cats}}" wx:key="_id" class="cat {{active === item._id ? 'on' : ''}}"
+          data-id="{{item._id}}" bindtap="onCat">{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 加载 / 错误 -->
+  <view class="empty" wx:if="{{loading}}">正在装货…</view>
+  <view class="card err" wx:elif="{{err}}">
+    <view class="h2">加载失败</view>
+    <view class="t-sub" style="margin:8rpx 0 24rpx;">{{err}}</view>
+    <button class="btn btn-ghost btn-sm" bindtap="load">重试</button>
+  </view>
+
+  <!-- 条目列表 -->
+  <view class="list" wx:else>
+    <view class="row card" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="goDetail">
+      <image wx:if="{{item.cover}}" class="thumb" src="{{item.cover}}" mode="aspectFill" lazy-load />
+      <view wx:else class="thumb ph">{{item.initial}}</view>
+
+      <view class="row-main">
+        <view class="row-name">{{item.name}}</view>
+        <view class="row-desc">{{item.desc}}</view>
+        <view class="row-tags" wx:if="{{item.tags.length}}">
+          <text class="mini" wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this">{{t}}</text>
+        </view>
+        <view class="row-bottom">
+          <view class="row-price">
+            <text class="t-price">{{item.priceText}}</text>
+            <text class="unit">/{{item.unit}}</text>
+          </view>
+          <view class="add" catchtap="addCart" data-id="{{item._id}}">加入清单</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{!list.length}}">
+      <block wx:if="{{isAdmin}}">还没有商品。点下面的「卖家工具 → 商品」，把老家有什么加进来。</block>
+      <block wx:else>还没有上架的东西，过两天再来看看。</block>
+    </view>
+  </view>
+
+  <!-- 清单 -->
+  <view class="cartbar" wx:if="{{cartCount > 0}}">
+    <view class="cartbar-l">
+      <text class="cartbar-num">{{cartCount}}</text>
+      <text class="cartbar-txt">件待提交</text>
+    </view>
+    <view class="cartbar-btn" bindtap="goCheckout">清单</view>
+  </view>
+
+  <view class="admin-entry" wx:if="{{isAdmin}}" bindtap="goAdmin">卖家工具</view>
+
+  <view class="foot">价格与库存仅供参考，最终以微信确认的为准</view>
+</view>

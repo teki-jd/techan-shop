@@ -1,0 +1,102 @@
+.gallery {
+  width: 100%;
+  height: 600rpx;
+  background: #F4E9DA;
+}
+.gallery-img { width: 100%; height: 600rpx; }
+.gallery.ph { font-size: 100rpx; }
+
+.block { margin: 20rpx 24rpx; }
+
+.name { font-size: 38rpx; font-weight: 700; line-height: 1.4; }
+.price-line { margin-top: 16rpx; display: flex; align-items: baseline; gap: 8rpx; }
+.t-price.big { font-size: 52rpx; }
+.unit { color: #A9A096; font-size: 24rpx; }
+.tags { margin-top: 16rpx; }
+.tags .mini {
+  display: inline-block;
+  font-size: 22rpx;
+  color: #C08A47;
+  background: #FBF1E2;
+  border-radius: 8rpx;
+  padding: 4rpx 14rpx;
+  margin-right: 10rpx;
+}
+.stock { margin-top: 16rpx; font-size: 23rpx; color: #A9A096; }
+
+.desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 27rpx;
+  color: #5A5249;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  font-size: 26rpx;
+  color: #5A5249;
+  margin-top: 16rpx;
+}
+.step .idx {
+  width: 34rpx;
+  height: 34rpx;
+  line-height: 34rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #F4E4DC;
+  color: #B4472E;
+  font-size: 20rpx;
+  flex: none;
+  margin-top: 4rpx;
+}
+.tip {
+  margin-top: 16rpx;
+  font-size: 23rpx;
+  color: #8C8279;
+  background: #FBF7F0;
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  border: 1rpx solid #EEE5D9;
+  border-radius: 12rpx;
+  overflow: hidden;
+  flex: none;
+}
+.qty-btn {
+  width: 64rpx;
+  height: 72rpx;
+  line-height: 68rpx;
+  text-align: center;
+  font-size: 36rpx;
+  color: #6B6259;
+  background: #FAF6F0;
+}
+.qty-input {
+  width: 78rpx;
+  height: 72rpx;
+  text-align: center;
+  font-size: 28rpx;
+}
+.btns { flex: 1; display: flex; gap: 12rpx; }
+.btns .btn { flex: 1; }
+
+.cart-fab {
+  position: fixed;
+  right: 24rpx;
+  bottom: 132rpx;
+  background: #2C2723;
+  color: #FFE6C7;
+  font-size: 24rpx;
+  padding: 14rpx 26rpx;
+  border-radius: 32rpx;
+  box-shadow: 0 8rpx 20rpx rgba(44, 39, 35, 0.25);
+  z-index: 25;
+}

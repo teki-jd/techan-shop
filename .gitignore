@@ -1,0 +1,22 @@
+# 密钥与真实数据，永远不进仓库
+.env
+.env.*
+!.env.example
+
+# 后端运行时产物
+server/data/
+server/logs/
+server/public/uploads/*
+!server/public/uploads/.gitkeep
+
+# 依赖（本项目零依赖，留着以防以后加）
+node_modules/
+
+# 本地打包产物
+dist/
+*.zip
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+*.log

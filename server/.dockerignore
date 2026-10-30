@@ -1,0 +1,20 @@
+# 镜像里不要的东西：密钥、真实数据、上传的图片、测试脚本、文档
+.env
+.env.*
+!.env.example
+
+data/
+logs/
+public/uploads/*
+!public/uploads/.gitkeep
+
+node_modules/
+
+*.md
+*.log
+test.js
+verify.sh
+ecosystem.config.js
+nginx.conf.example
+Dockerfile
+.dockerignore

@@ -1,0 +1,52 @@
+.block { margin: 20rpx 24rpx; }
+
+.cover-wrap { display: flex; align-items: center; gap: 24rpx; }
+.cover { width: 200rpx; height: 200rpx; border-radius: 16rpx; background: #F4E9DA; }
+.cover.ph { font-size: 60rpx; }
+.cover-tip { font-size: 24rpx; color: #B4472E; }
+
+.grid { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.cell {
+  width: 190rpx;
+  height: 190rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  position: relative;
+  background: #F7F1E7;
+}
+.cell-img { width: 100%; height: 100%; }
+.cell-del {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 40rpx;
+  text-align: center;
+  background: rgba(44, 39, 35, 0.6);
+  color: #FFF;
+  font-size: 30rpx;
+  border-bottom-left-radius: 12rpx;
+}
+.cell.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 54rpx;
+  color: #C4B6A4;
+  border: 1rpx dashed #E5D8C6;
+}
+
+.desc-area {
+  width: 100%;
+  height: 300rpx;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  line-height: 1.8;
+  background: #FBF7F0;
+  border-radius: 12rpx;
+  padding: 18rpx;
+}
+
+.btn-bar { padding: 12rpx 24rpx 60rpx; display: flex; gap: 20rpx; }
+.btn-bar .btn { flex: 1; }

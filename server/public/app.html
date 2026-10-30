@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>老家特产小铺 · 网页版体验</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B5%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="tb-left">
+      <div class="tb-name" id="shopName">老家特产</div>
+      <div class="tb-sub" id="shopSlogan">老家直发 · 熟人小单</div>
+    </div>
+    <div class="tb-right">
+      <label class="who">
+        <span>体验身份</span>
+        <select id="whoSel">
+          <option value="boss">我（卖家）</option>
+          <option value="kehu1">同事小王</option>
+          <option value="kehu2">同事小李</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main id="view"></main>
+
+  <nav class="tabbar" id="tabbar">
+    <div class="tab" data-tab="home"><i>目录</i></div>
+    <div class="tab" data-tab="orders"><i>登记记录</i></div>
+    <div class="tab" data-tab="mine"><i>我的</i></div>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="modal">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

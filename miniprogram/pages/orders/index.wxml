@@ -1,0 +1,51 @@
+<view class="page">
+
+  <view class="empty" wx:if="{{loading}}">加载中…</view>
+  <view class="empty" wx:elif="{{err}}">{{err}}</view>
+
+  <block wx:elif="{{list.length}}">
+    <view class="card order" wx:for="{{list}}" wx:key="_id">
+      <view class="o-head">
+        <view class="o-no" data-no="{{item.orderNo}}" bindtap="copyNo">{{item.orderNo}}</view>
+        <view class="o-status" style="color:{{item.statusColor}};border-color:{{item.statusColor}}">{{item.statusText}}</view>
+      </view>
+
+      <view class="o-items">
+        <view class="o-item" wx:for="{{item.items}}" wx:for-item="it" wx:key="productId">
+          <view class="o-it-name">{{it.name}}</view>
+          <view class="o-it-qty">{{it.priceText}} × {{it.qty}}</view>
+        </view>
+      </view>
+
+      <view class="o-meta">
+        <text>{{item.timeText}}</text>
+        <text>{{item.mode === 'pickup' ? '自取' : '快递'}}</text>
+      </view>
+
+      <view class="o-freight" wx:if="{{item.freightText}}">
+        运费 ¥{{item.freightText}} · 合计 <text class="t-price">¥{{item.totalText}}</text>
+      </view>
+      <view class="o-freight" wx:else>
+        运费待确认 · 参考合计 <text class="t-price">¥{{item.amountText}}</text>
+      </view>
+
+      <view class="o-note" wx:if="{{item.adminNote}}">卖家留言：{{item.adminNote}}</view>
+
+      <view class="o-actions">
+        <view class="btn btn-gray btn-sm" data-no="{{item.orderNo}}" bindtap="copyNo">复制编号</view>
+        <view class="btn btn-ghost btn-sm" wx:if="{{item.status === 'pending' || item.status === 'quoted'}}"
+              data-id="{{item._id}}" data-no="{{item.orderNo}}" bindtap="cancel">取消登记</view>
+        <view class="btn btn-ghost btn-sm" bindtap="callSeller">联系卖家</view>
+      </view>
+    </view>
+
+    <view class="foot">状态由卖家自己更新，转账请在微信里直接给我</view>
+  </block>
+
+  <view class="empty" wx:else>
+    <view>还没有登记过</view>
+    <view style="margin-top:32rpx;">
+      <button class="btn btn-pri btn-sm" bindtap="goShop">去看看特产</button>
+    </view>
+  </view>
+</view>

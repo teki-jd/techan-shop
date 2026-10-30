@@ -1,0 +1,84 @@
+<view class="page" style="padding-top:{{topPad}}px; padding-bottom:180rpx;">
+
+  <view class="empty" wx:if="{{loading}}">正在核对价格…</view>
+  <view class="empty" wx:elif="{{err}}">{{err}}</view>
+
+  <block wx:else>
+    <!-- 清单 -->
+    <view class="card block">
+      <view class="card-head">
+        <view class="back" bindtap="goBack"></view>
+        <view class="card-title">清单</view>
+        <view class="head-hold"></view>
+      </view>
+
+      <view class="item" wx:for="{{items}}" wx:key="productId">
+        <image wx:if="{{item.cover}}" class="thumb" src="{{item.cover}}" mode="aspectFill" />
+        <view wx:else class="thumb ph">{{item.initial}}</view>
+        <view class="item-main">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-unit">{{item.priceText}} / {{item.unit}}</view>
+          <view class="item-bottom">
+            <view class="qty">
+              <view class="qty-btn" data-i="{{index}}" bindtap="minus">−</view>
+              <view class="qty-num">{{item.qty}}</view>
+              <view class="qty-btn" data-i="{{index}}" bindtap="plus">+</view>
+            </view>
+            <view class="item-line">¥{{item.lineText}}</view>
+          </view>
+        </view>
+        <view class="del" data-i="{{index}}" bindtap="remove">删除</view>
+      </view>
+
+      <view class="sum">
+        <text class="t-sub">共 {{count}} 件，参考合计</text>
+        <text class="t-price sum-num">{{total}}</text>
+      </view>
+      <view class="sum-tip" wx:if="{{s.freightNote}}">{{s.freightNote}}</view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="card block">
+      <view class="h2" style="margin-bottom:8rpx;">怎么联系你</view>
+      <view class="form-row">
+        <view class="form-label">姓名</view>
+        <input class="form-input" placeholder="收货人姓名" placeholder-class="form-ph"
+               value="{{contact.name}}" data-k="name" bindinput="onInput" />
+      </view>
+      <view class="form-row">
+        <view class="form-label">手机号</view>
+        <input class="form-input" type="number" maxlength="11" placeholder="11 位手机号"
+               placeholder-class="form-ph" value="{{contact.phone}}" data-k="phone" bindinput="onInput" />
+      </view>
+      <view class="form-row">
+        <view class="form-label">收货地址</view>
+        <input class="form-input" placeholder="省市区 + 详细地址" placeholder-class="form-ph"
+               value="{{address}}" data-k="address" bindinput="onInput" />
+      </view>
+      <view class="addr-import" bindtap="importAddress">
+        从微信收货地址一键填入
+      </view>
+      <view class="form-row">
+        <view class="form-label">备注</view>
+        <input class="form-input" placeholder="其他要求写到这里" placeholder-class="form-ph"
+               value="{{remark}}" data-k="remark" bindinput="onInput" />
+      </view>
+    </view>
+
+    <!-- 流程提示 -->
+    <view class="card block note">
+      <view class="note-t">费用说明</view>
+      <view class="note-c">提交后这条登记会进我的台账，我按顺序给你打电话，确认运费和总额。小程序里不收钱，也不走线上支付，转账在微信里直接给我。</view>
+    </view>
+  </block>
+
+  <view class="bottom-bar" wx:if="{{!loading && !err}}">
+    <view class="bar-left">
+      <view class="bar-total"><text class="t-sub">小计</text> <text class="t-price bar-num">{{total}}</text></view>
+      <view class="bar-sub">运费待确认</view>
+    </view>
+    <button class="btn btn-pri" style="flex:1;" bindtap="submit" disabled="{{submitting}}">
+      {{submitting ? '提交中…' : '提交登记'}}
+    </button>
+  </view>
+</view>

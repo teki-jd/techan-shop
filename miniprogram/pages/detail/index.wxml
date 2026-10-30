@@ -1,0 +1,67 @@
+<view class="page" style="padding-bottom:160rpx;">
+
+  <view class="empty" wx:if="{{loading}}">加载中…</view>
+
+  <view class="empty" wx:elif="{{err}}">
+    {{err}}
+    <view style="margin-top:24rpx;">
+      <button class="btn btn-ghost btn-sm" bindtap="load">重试</button>
+    </view>
+  </view>
+
+  <block wx:else>
+    <!-- 图集 -->
+    <swiper wx:if="{{imgs.length}}" class="gallery" indicator-dots="{{imgs.length > 1}}"
+            indicator-color="rgba(255,255,255,.5)" indicator-active-color="#B4472E" circular>
+      <swiper-item wx:for="{{imgs}}" wx:key="*this" data-i="{{index}}" bindtap="preview">
+        <image class="gallery-img" src="{{item}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+    <view wx:else class="gallery ph">{{p.initial}}</view>
+
+    <!-- 主信息 -->
+    <view class="card block">
+      <view class="name">{{p.name}}</view>
+      <view class="price-line">
+        <text class="t-price big">{{p.priceText}}</text>
+        <text class="unit">/ {{p.unit}}</text>
+      </view>
+      <view class="tags" wx:if="{{p.tags.length}}">
+        <text class="mini" wx:for="{{p.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="stock">库存参考：{{p.stock === null ? '不限' : (p.stock + ' ' + p.unit)}}</view>
+    </view>
+
+    <!-- 说明 -->
+    <view class="card block">
+      <view class="h2">关于这个</view>
+      <text class="desc">{{p.desc}}</text>
+    </view>
+
+    <!-- 交易说明 -->
+    <view class="card block">
+      <view class="h2">怎么登记</view>
+      <view class="step"><text class="idx">1</text>选好数量，提交一条登记</view>
+      <view class="step"><text class="idx">2</text>我打电话给你，确认运费和总额</view>
+      <view class="step"><text class="idx">3</text>微信转账给我，我安排寄出</view>
+      <view class="tip" wx:if="{{s.freightNote}}">运费说明：{{s.freightNote}}</view>
+    </view>
+  </block>
+
+  <!-- 底部操作 -->
+  <view class="bottom-bar" wx:if="{{p}}">
+    <view class="qty">
+      <view class="qty-btn" bindtap="minus">−</view>
+      <input class="qty-input" type="number" value="{{qty}}" bindinput="onQtyInput" />
+      <view class="qty-btn" bindtap="plus">+</view>
+    </view>
+    <view class="btns">
+      <button class="btn btn-ghost btn-sm" bindtap="addCart">加入清单</button>
+      <button class="btn btn-pri btn-sm" bindtap="buyNow">登记需求</button>
+    </view>
+  </view>
+
+  <view class="cart-fab" wx:if="{{cartCount > 0}}" bindtap="goCheckout">
+    清单 {{cartCount}} 件 · 去登记
+  </view>
+</view>
