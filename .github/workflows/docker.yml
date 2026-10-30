@@ -4,7 +4,12 @@ name: docker
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    # 只改文档不重建镜像；后端或工作流本身变了才构建
+    # 注意：没保留 tags 触发，因为 paths 过滤会让 tag 推送无法触发构建。
+    # 回滚用 :sha-<7位> 标签，不需要版本号标签。
+    paths:
+      - 'server/**'
+      - '.github/workflows/docker.yml'
   workflow_dispatch:
 
 env:
