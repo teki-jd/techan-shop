@@ -106,8 +106,6 @@ rows.forEach(function (r, i) {
   if (catName && !catId) unknownCats[catName] = true
 
   const price = Number(pick(r, '价格').replace(/[^\d.\-]/g, ''))
-  const stockRaw = pick(r, '库存')
-  const stock = stockRaw === '' ? null : Number(stockRaw.replace(/[^\d\-]/g, ''))
 
   const tags = pick(r, '标签')
     .split(/[|,，、\s]+/)
@@ -120,11 +118,11 @@ rows.forEach(function (r, i) {
     catId: catId,
     catName: catName,
     price: isFinite(price) ? price : 0,
-    unit: pick(r, '单位') || '份',
+    unit: pick(r, '单位') || '袋',
+    weight: pick(r, '重量'),
     desc: pick(r, '介绍'),
     cover: '',
     images: [],
-    stock: isFinite(stock) && stock !== null ? stock : null,
     tags: tags,
     sort: (rows.length - i) * 10,
     onSale: true

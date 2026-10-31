@@ -22,6 +22,17 @@ const num = function (v, dft) {
 }
 const round2 = function (n) { return Math.round(n * 100) / 100 }
 
+// 单位只记「袋/盒/瓶/箱」这类，重量单独一个字段。
+// 老数据把重量写在单位里（比如「袋(250g)」），读出来时自动拆开。
+function splitUnit (unit, weight) {
+  const u = String(unit || '').trim()
+  const w = String(weight || '').trim()
+  if (w) return { unit: u || '袋', weight: w }
+  const m = u.match(/^([^(（]+)[(（]([^)）]+)[)）]$/)
+  if (m) return { unit: m[1].trim() || '袋', weight: m[2].trim() }
+  return { unit: u || '袋', weight: '' }
+}
+
 /** 集合不存在时自动创建（重复创建会报错，忽略即可） */
 async function ensureCollections () {
   for (const k in C) {
@@ -128,16 +139,17 @@ async function getHome (openid) {
 }
 
 function slim (p) {
+  const uw = splitUnit(p.unit, p.weight)
   return {
     _id: p._id,
     name: p.name,
     catId: p.catId || '',
     catName: p.catName || '',
     price: p.price || 0,
-    unit: p.unit || '份',
+    unit: uw.unit,
+    weight: uw.weight,
     desc: p.desc || '',
     cover: p.cover || (p.images && p.images[0]) || '',
-    stock: (p.stock === undefined || p.stock === null) ? null : p.stock,
     onSale: p.onSale !== false,
     tags: p.tags || []
   }
@@ -185,7 +197,8 @@ async function createOrder (openid, e) {
     if (p.onSale === false) throw new Error('「' + p.name + '」已经下架了，换一个吧')
     const qty = Math.max(1, Math.min(999, parseInt(it.qty, 10) || 1))
     amount += num(p.price) * qty
-    lines.push({ productId: p._id, name: p.name, unit: p.unit, price: num(p.price), qty: qty, cover: p.cover || '' })
+    const uw = splitUnit(p.unit, p.weight)
+    lines.push({ productId: p._id, name: p.name, unit: uw.unit, weight: uw.weight, price: num(p.price), qty: qty, cover: p.cover || '' })
   }
   amount = round2(amount)
 
@@ -355,16 +368,18 @@ async function adminSaveProduct (openid, e) {
   const cats = await db.collection(C.categories).where({ _id: p.catId }).limit(1).get()
     .then(function (r) { return r.data }).catch(function () { return [] })
 
+  const uw = splitUnit(p.unit, p.weight)
+
   const data = {
     name: name,
     catId: p.catId || '',
     catName: (cats[0] && cats[0].name) || p.catName || '',
     price: round2(price),
-    unit: String(p.unit || '份').trim(),
+    unit: uw.unit,
+    weight: uw.weight,
     desc: String(p.desc || '').slice(0, 2000),
     cover: p.cover || '',
     images: Array.isArray(p.images) ? p.images.slice(0, 9) : [],
-    stock: (p.stock === '' || p.stock === undefined || p.stock === null) ? null : num(p.stock, null),
     tags: Array.isArray(p.tags) ? p.tags.slice(0, 6) : [],
     sort: num(p.sort, 0),
     onSale: p.onSale !== false,

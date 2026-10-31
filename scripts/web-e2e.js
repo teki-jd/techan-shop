@@ -58,12 +58,12 @@ async function seedData () {
     catIds[name] = r.data._id
   }
   for (const g of [
-    ['野生黑木耳', '山货干货', 38, '袋(250g)'],
-    ['土蜂蜜', '手工吃食', 88, '瓶(500g)'],
-    ['手工红薯粉条', '手工吃食', 26, '袋(500g)'],
-    ['当季脆柿', '时令鲜货', 45, '箱(5斤)']
+    ['野生黑木耳', '山货干货', 38, '袋', '250g'],
+    ['土蜂蜜', '手工吃食', 88, '瓶', '500g'],
+    ['手工红薯粉条', '手工吃食', 26, '袋', '500g'],
+    ['当季脆柿', '时令鲜货', 45, '箱', '5斤']
   ]) {
-    await call('adminSaveProduct', { product: { name: g[0], catId: catIds[g[1]], price: g[2], unit: g[3], stock: 20 } })
+    await call('adminSaveProduct', { product: { name: g[0], catId: catIds[g[1]], price: g[2], unit: g[3], weight: g[4] } })
   }
 }
 

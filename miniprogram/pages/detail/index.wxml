@@ -29,7 +29,7 @@
       <view class="tags" wx:if="{{p.tags.length}}">
         <text class="mini" wx:for="{{p.tags}}" wx:key="*this">{{item}}</text>
       </view>
-      <view class="stock">库存参考：{{p.stock === null ? '不限' : (p.stock + ' ' + p.unit)}}</view>
+      <view class="stock" wx:if="{{p.weight}}">每{{p.unit}} {{p.weight}}</view>
     </view>
 
     <!-- 说明 -->

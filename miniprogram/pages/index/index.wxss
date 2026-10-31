@@ -131,14 +131,6 @@
   border-radius: 36rpx;
 }
 
-.admin-entry {
-  margin: 32rpx 24rpx 0;
-  text-align: center;
-  color: #8C8279;
-  font-size: 24rpx;
-  text-decoration: underline;
-}
-
 .foot {
   text-align: center;
   color: #B8AFA4;

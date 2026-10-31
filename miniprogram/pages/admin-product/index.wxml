@@ -21,19 +21,23 @@
       <view class="form-row">
         <view class="form-label">价格</view>
         <input class="form-input" type="digit" value="{{p.price}}" data-k="price" bindinput="onInput"
-               placeholder="单位是元，可填 38.5" placeholder-class="form-ph" />
+               placeholder="每{{p.unit || '袋'}}多少钱，可填 38.5" placeholder-class="form-ph" />
       </view>
 
       <view class="form-row">
-        <view class="form-label">计价单位</view>
+        <view class="form-label">单位</view>
         <input class="form-input" value="{{p.unit}}" data-k="unit" bindinput="onInput"
-               placeholder="份 / 袋(250g) / 箱(5斤)" placeholder-class="form-ph" />
+               placeholder="一袋写 袋，一盒写 盒" placeholder-class="form-ph" />
+      </view>
+      <view class="chips">
+        <text class="chip {{p.unit === item ? 'chip-on' : ''}}" wx:for="{{unitOptions}}" wx:key="*this"
+              data-u="{{item}}" bindtap="pickUnit">{{item}}</text>
       </view>
 
       <view class="form-row">
-        <view class="form-label">库存</view>
-        <input class="form-input" type="number" value="{{p.stock}}" data-k="stock" bindinput="onInput"
-               placeholder="留空表示不限" placeholder-class="form-ph" />
+        <view class="form-label">重量</view>
+        <input class="form-input" value="{{p.weight}}" data-k="weight" bindinput="onInput"
+               placeholder="250g / 500g / 5斤" placeholder-class="form-ph" />
       </view>
 
       <view class="form-row">

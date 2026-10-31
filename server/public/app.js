@@ -174,7 +174,7 @@ function itemCard (p) {
   return '<div class="item" data-act="detail" data-id="' + p._id + '">' + cover +
     '<div class="item-body"><div class="item-name">' + esc(p.name) + '</div>' +
     '<div class="item-desc">' + esc(p.desc || '') + '</div>' +
-    '<div class="item-foot"><div><div class="price">' + money(p.price) + '<small>/' + esc(p.unit) + '</small></div></div>' +
+    '<div class="item-foot"><div><div class="price">' + money(p.price) + '<small>/' + esc(p.unit) + (p.weight ? ' · ' + esc(p.weight) : '') + '</small></div></div>' +
     '<button class="plus" data-act="add" data-id="' + p._id + '">+</button></div></div></div>'
 }
 
@@ -190,10 +190,10 @@ function renderDetail () {
     hero +
     '<div class="card"><div class="item-name" style="font-size:17px">' + esc(p.name) + '</div>' +
     '<div class="row" style="margin-top:8px"><div class="bigprice">' + money(p.price) + '</div>' +
-    '<div class="sub" style="margin-left:4px">/ ' + esc(p.unit) + '</div></div>' +
+    '<div class="sub" style="margin-left:4px">/ ' + esc(p.unit) + (p.weight ? ' · ' + esc(p.weight) : '') + '</div></div>' +
     (p.tags && p.tags.length ? '<div style="margin-top:8px">' + p.tags.map((t) => '<span class="tag">' + esc(t) + '</span>').join('') + '</div>' : '') +
     '<div class="p" style="white-space:pre-wrap">' + esc(p.desc || '') + '</div>' +
-    '<div class="sub" style="margin-top:10px">' + (p.stock == null ? '常备现货' : '库存约 ' + p.stock + ' ' + esc(p.unit)) + '</div></div>' +
+    (p.weight ? '<div class="sub" style="margin-top:10px">每' + esc(p.unit) + ' ' + esc(p.weight) + '</div>' : '') + '</div>' +
 
     '<div class="card"><h2>怎么登记</h2><div class="steps">' +
     '<div class="step"><i>1</i><span>选好数量，加进清单</span></div>' +
@@ -221,7 +221,7 @@ function renderCheckout () {
     '<div class="chd-t">清单</div><div class="chd-hold"></div></div>' +
     lines.map((x) =>
       '<div class="li"><div class="li-t"><div class="li-n">' + esc(x.p.name) + '</div>' +
-      '<div class="li-s">' + money(x.p.price) + ' / ' + esc(x.p.unit) + '</div></div>' +
+      '<div class="li-s">' + money(x.p.price) + ' / ' + esc(x.p.unit) + (x.p.weight ? ' · ' + esc(x.p.weight) : '') + '</div></div>' +
       '<div class="qty"><button data-act="cminus" data-id="' + x.p._id + '">−</button><span>' + x.qty + '</span>' +
       '<button data-act="cplus" data-id="' + x.p._id + '">+</button></div>' +
       '<button class="del" data-act="cdel" data-id="' + x.p._id + '">×</button></div>').join('') +
@@ -389,7 +389,7 @@ async function renderAdminProducts () {
 
   html += d.products.map((p) =>
     '<div class="order"><div class="o-top"><div><div class="item-name">' + esc(p.name) + '</div>' +
-    '<div class="sub">' + money(p.price) + ' / ' + esc(p.unit) + ' · ' + esc(p.catName || '未分类') + '</div></div>' +
+    '<div class="sub">' + money(p.price) + ' / ' + esc(p.unit) + (p.weight ? ' · ' + esc(p.weight) : '') + ' · ' + esc(p.catName || '未分类') + '</div></div>' +
     '<span class="badge ' + (p.onSale === false ? 'cancelled' : 'paid') + '">' + (p.onSale === false ? '已隐藏' : '在售展示') + '</span></div>' +
     '<div class="o-acts"><button class="btn ghost sm" data-act="editProduct" data-id="' + p._id + '">编辑</button>' +
     '<button class="btn gray sm" data-act="toggle" data-id="' + p._id + '" data-on="' + (p.onSale === false ? '1' : '0') + '">' +
@@ -420,7 +420,7 @@ async function renderAdminSettings () {
 /* ------------------------------------------------------------ 商品编辑弹层 */
 function openProductEditor (id) {
   const d = state.admin || { products: [], categories: [] }
-  const p = d.products.find((x) => x._id === id) || { name: '', price: '', unit: '份', desc: '', stock: '', catId: '', cover: '', onSale: true, tags: [] }
+  const p = d.products.find((x) => x._id === id) || { name: '', price: '', unit: '袋', weight: '', desc: '', catId: '', cover: '', onSale: true, tags: [] }
   const cats = d.categories.map((c) =>
     '<option value="' + c._id + '"' + (p.catId === c._id ? ' selected' : '') + '>' + esc(c.name) + '</option>').join('')
   openModal(
@@ -429,8 +429,8 @@ function openProductEditor (id) {
     '<label class="f"><span>名称 *</span><input id="p-name" value="' + esc(p.name) + '" placeholder="比如 野生黑木耳"></label>' +
     '<label class="f"><span>分类</span><select id="p-cat"><option value="">未分类</option>' + cats + '</select></label>' +
     '<div class="row" style="gap:10px"><label class="f grow"><span>参考价 *</span><input id="p-price" value="' + esc(p.price) + '" placeholder="38"></label>' +
-    '<label class="f grow"><span>单位</span><input id="p-unit" value="' + esc(p.unit) + '" placeholder="袋(250g)"></label></div>' +
-    '<label class="f"><span>库存</span><input id="p-stock" value="' + esc(p.stock == null ? '' : p.stock) + '" placeholder="留空=常备现货"></label>' +
+    '<label class="f grow"><span>单位</span><input id="p-unit" value="' + esc(p.unit) + '" placeholder="袋 / 盒 / 瓶"></label>' +
+    '<label class="f grow"><span>重量</span><input id="p-weight" value="' + esc(p.weight || '') + '" placeholder="250g / 5斤"></label></div>' +
     '<label class="f"><span>介绍</span><textarea id="p-desc">' + esc(p.desc) + '</textarea></label>' +
     '<label class="f"><span>图片（选一张本地图，自动上传）</span><input type="file" id="p-file" accept="image/*"></label>' +
     '<label class="f"><span>或直接填图片地址</span><input id="p-cover" value="' + esc(p.cover) + '" placeholder="/uploads/xxx.jpg"></label>' +
@@ -645,8 +645,8 @@ async function saveProduct () {
     name: $('#p-name').value.trim(),
     catId: $('#p-cat').value,
     price: Number($('#p-price').value),
-    unit: $('#p-unit').value.trim() || '份',
-    stock: $('#p-stock').value === '' ? null : Number($('#p-stock').value),
+    unit: $('#p-unit').value.trim() || '袋',
+    weight: $('#p-weight').value.trim(),
     desc: $('#p-desc').value,
     cover: finalCover,
     images: finalCover ? [finalCover] : [],

@@ -1,5 +1,16 @@
 .block { margin: 20rpx 24rpx; }
 
+.chips { display: flex; flex-wrap: wrap; gap: 14rpx; margin: 16rpx 0 6rpx; }
+.chip {
+  padding: 10rpx 26rpx;
+  border-radius: 999rpx;
+  background: #F7F1E7;
+  color: #6B6259;
+  font-size: 24rpx;
+  line-height: 1.4;
+}
+.chip-on { background: #B4472E; color: #FFF; }
+
 .cover-wrap { display: flex; align-items: center; gap: 24rpx; }
 .cover { width: 200rpx; height: 200rpx; border-radius: 16rpx; background: #F4E9DA; }
 .cover.ph { font-size: 60rpx; }

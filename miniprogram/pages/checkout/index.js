@@ -74,6 +74,7 @@ Page({
             productId: p._id,
             name: p.name,
             unit: p.unit,
+            weight: p.weight || '',
             price: p.price,
             priceText: fmt.money(p.price),
             cover: p.cover,

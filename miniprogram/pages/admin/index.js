@@ -295,6 +295,11 @@ Page({
     this.setData(patch)
   },
 
+  // 「新分类」输入框单独处理：不能走 onSetInput，那是给店铺设置（s.xxx）用的
+  onCatInput (e) {
+    this.setData({ newCat: e.detail.value })
+  },
+
   saveSettings () {
     const self = this
     wx.showLoading({ title: '保存中', mask: true })

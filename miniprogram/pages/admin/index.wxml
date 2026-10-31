@@ -42,7 +42,7 @@
         <view class="o-items">
           <view class="o-item" wx:for="{{item.items}}" wx:for-item="it" wx:key="productId">
             <text class="o-it-name">{{it.name}}</text>
-            <text class="o-it-qty">{{it.priceText}} × {{it.qty}} = ¥{{it.lineText}}</text>
+            <text class="o-it-qty">{{it.priceText}}<text wx:if="{{it.unit}}">/{{it.unit}}</text> × {{it.qty}} = ¥{{it.lineText}}</text>
           </view>
         </view>
 
@@ -90,7 +90,7 @@
         <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="delCat">删</view>
       </view>
       <view class="cat-row">
-        <input class="form-input cat-input" value="{{newCat}}" data-k="newCat" bindinput="onSetInput"
+        <input class="form-input cat-input" value="{{newCat}}" data-k="newCat" bindinput="onCatInput"
                placeholder="新分类名" placeholder-class="form-ph" />
         <view class="btn btn-pri btn-sm" bindtap="addCat">添加</view>
       </view>
@@ -105,7 +105,7 @@
         <view wx:else class="pthumb ph">{{item.initial}}</view>
         <view class="pmain">
           <view class="pname">{{item.name}}</view>
-          <view class="pmeta">{{item.catName || '未分类'}} · ¥{{item.priceText}}/{{item.unit}} · 库存 {{item.stock === null ? '不限' : item.stock}}</view>
+          <view class="pmeta">{{item.catName || '未分类'}} · ¥{{item.priceText}}/{{item.unit}}<text wx:if="{{item.weight}}"> · {{item.weight}}</text></view>
           <view class="prow-btns">
             <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="editProduct">编辑</view>
             <view class="switch-wrap">

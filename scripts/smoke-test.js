@@ -48,12 +48,12 @@ async function call (action, data, openid) {
   }
   let seedOk = true
   for (const g of [
-    ['野生黑木耳', '山货干货', 38, '袋(250g)'],
-    ['土蜂蜜', '手工吃食', 88, '瓶(500g)'],
-    ['手工红薯粉条', '手工吃食', 26, '袋(500g)'],
-    ['当季脆柿', '时令鲜货', 45, '箱(5斤)']
+    ['野生黑木耳', '山货干货', 38, '袋', '250g'],
+    ['土蜂蜜', '手工吃食', 88, '瓶', '500g'],
+    ['手工红薯粉条', '手工吃食', 26, '袋', '500g'],
+    ['当季脆柿', '时令鲜货', 45, '箱', '5斤']
   ]) {
-    const rp = await call('adminSaveProduct', { product: { name: g[0], catId: catIds[g[1]], price: g[2], unit: g[3], stock: 20 } }, 'openid-boss')
+    const rp = await call('adminSaveProduct', { product: { name: g[0], catId: catIds[g[1]], price: g[2], unit: g[3], weight: g[4] } }, 'openid-boss')
     seedOk = seedOk && rp.ok
   }
   ok(seedOk, '测试数据：3 分类 + 4 商品已建好')
@@ -139,7 +139,7 @@ async function call (action, data, openid) {
 
   console.log('\n[6] 商品管理')
   r = await call('adminSaveProduct', {
-    product: { name: '新到板栗', catId: cat._id, price: 19.9, unit: '袋(500g)', desc: '刚下树', stock: 10, tags: ['当季'] }
+    product: { name: '新到板栗', catId: cat._id, price: 19.9, unit: '袋', weight: '500g', desc: '刚下树', tags: ['当季'] }
   }, 'openid-boss')
   ok(r.ok && r.data._id, '新增商品成功')
   const newId = r.data._id

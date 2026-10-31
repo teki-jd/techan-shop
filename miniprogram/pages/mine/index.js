@@ -4,70 +4,22 @@ const config = require('../../config')
 
 Page({
   data: {
-    contact: { name: '', phone: '' },
     s: {},
     isAdmin: false,
     needInit: false,
-    openid: '',
-    saving: false,
-    // 仅本地联调时显示：当前假身份 + 数据存在哪
-    devWho: config.backend === 'http' ? (config.devOpenid || '') : '',
-    storeWhere: api.backend === 'http' ? '自建服务器' : '微信云开发'
+    // 仅本地联调时显示：当前假身份
+    devWho: config.backend === 'http' ? (config.devOpenid || '') : ''
   },
 
   onShow () {
     const self = this
     app.whenReady().then(function (g) {
-      const u = g.user || {}
-      const local = wx.getStorageSync('techan_contact') || {}
       self.setData({
         s: g.settings || {},
         isAdmin: !!g.isAdmin,
-        needInit: !!g.needInit,
-        openid: g.openid || '',
-        contact: {
-          name: u.name || local.name || '',
-          phone: u.phone || local.phone || ''
-        }
+        needInit: !!g.needInit
       })
     }).catch(function () {})
-  },
-
-  onInput (e) {
-    const k = e.currentTarget.dataset.k
-    const patch = {}
-    patch['contact.' + k] = e.detail.value
-    this.setData(patch)
-  },
-
-  save () {
-    const self = this
-    const c = this.data.contact
-    if (!String(c.name || '').trim()) return wx.showToast({ title: '填个姓名', icon: 'none' })
-    if (!/^1\d{10}$/.test(String(c.phone || '').trim())) return wx.showToast({ title: '手机号不对', icon: 'none' })
-    this.setData({ saving: true })
-    api.call('saveContact', { contact: c })
-      .then(function () {
-        wx.setStorageSync('techan_contact', c)
-        self.setData({ saving: false })
-        wx.showToast({ title: '已保存', icon: 'success' })
-      })
-      .catch(function (e) {
-        self.setData({ saving: false })
-        wx.showModal({ title: '保存失败', content: e.message, showCancel: false })
-      })
-  },
-
-  copy (e) {
-    const v = e.currentTarget.dataset.v
-    if (!v) return
-    wx.setClipboardData({ data: String(v) })
-  },
-
-  call () {
-    const p = this.data.s.phone
-    if (!p) return wx.showToast({ title: '卖家还没填手机号', icon: 'none' })
-    wx.makePhoneCall({ phoneNumber: p })
   },
 
   goAdmin () {
@@ -97,10 +49,5 @@ Page({
           })
       }
     })
-  },
-
-  copyOpenid () {
-    if (!this.data.openid) return
-    wx.setClipboardData({ data: this.data.openid })
   }
 })

@@ -1,6 +1,6 @@
-{"name":"野生黑木耳","catId":"cat-shanye","catName":"山货干货","price":38,"unit":"袋(250g)","desc":"山里自家晒的秋木耳，肉厚，泡发率高。凉拌、炒肉都行。","cover":"","images":[],"stock":20,"tags":["自家晒","干货"],"sort":60,"onSale":true}
-{"name":"土蜂蜜","catId":"cat-shoushi","catName":"手工吃食","price":88,"unit":"瓶(500g)","desc":"老家亲戚养的蜂，一年只取一次，会结晶，正常现象。温水冲服。","cover":"","images":[],"stock":12,"tags":["一年一取"],"sort":50,"onSale":true}
-{"name":"手工红薯粉条","catId":"cat-shoushi","catName":"手工吃食","price":26,"unit":"袋(500g)","desc":"纯红薯淀粉手工漏的粉条，久煮不烂。炖菜、酸辣粉都合适。","cover":"","images":[],"stock":30,"tags":["手工"],"sort":40,"onSale":true}
-{"name":"当季脆柿","catId":"cat-xianhuo","catName":"时令鲜货","price":45,"unit":"箱(5斤)","desc":"树上熟的脆柿，脆甜不涩。现摘现发，收到请尽快吃。","cover":"","images":[],"stock":15,"tags":["当季","现摘"],"sort":30,"onSale":true}
-{"name":"干香菇","catId":"cat-shanye","catName":"山货干货","price":42,"unit":"袋(200g)","desc":"柴火烘的干香菇，泡发后肉厚。炖鸡炖排骨放几朵就够香。","cover":"","images":[],"stock":18,"tags":["厚肉","炖汤香"],"sort":20,"onSale":true}
-{"name":"手工辣酱","catId":"cat-shoushi","catName":"手工吃食","price":22,"unit":"瓶(200g)","desc":"自家配方熬的辣酱，微辣带香。拌面、夹馒头、炒菜都行。","cover":"","images":[],"stock":25,"tags":["下饭"],"sort":10,"onSale":true}
+{"name": "野生黑木耳", "catId": "cat-shanye", "catName": "山货干货", "price": 38, "desc": "山里自家晒的秋木耳，肉厚，泡发率高。凉拌、炒肉都行。", "cover": "", "images": [], "tags": ["自家晒", "干货"], "sort": 60, "onSale": true, "unit": "袋", "weight": "250g"}
+{"name": "土蜂蜜", "catId": "cat-shoushi", "catName": "手工吃食", "price": 88, "desc": "老家亲戚养的蜂，一年只取一次，会结晶，正常现象。温水冲服。", "cover": "", "images": [], "tags": ["一年一取"], "sort": 50, "onSale": true, "unit": "瓶", "weight": "500g"}
+{"name": "手工红薯粉条", "catId": "cat-shoushi", "catName": "手工吃食", "price": 26, "desc": "纯红薯淀粉手工漏的粉条，久煮不烂。炖菜、酸辣粉都合适。", "cover": "", "images": [], "tags": ["手工"], "sort": 40, "onSale": true, "unit": "袋", "weight": "500g"}
+{"name": "当季脆柿", "catId": "cat-xianhuo", "catName": "时令鲜货", "price": 45, "desc": "树上熟的脆柿，脆甜不涩。现摘现发，收到请尽快吃。", "cover": "", "images": [], "tags": ["当季", "现摘"], "sort": 30, "onSale": true, "unit": "箱", "weight": "5斤"}
+{"name": "干香菇", "catId": "cat-shanye", "catName": "山货干货", "price": 42, "desc": "柴火烘的干香菇，泡发后肉厚。炖鸡炖排骨放几朵就够香。", "cover": "", "images": [], "tags": ["厚肉", "炖汤香"], "sort": 20, "onSale": true, "unit": "袋", "weight": "200g"}
+{"name": "手工辣酱", "catId": "cat-shoushi", "catName": "手工吃食", "price": 22, "desc": "自家配方熬的辣酱，微辣带香。拌面、夹馒头、炒菜都行。", "cover": "", "images": [], "tags": ["下饭"], "sort": 10, "onSale": true, "unit": "瓶", "weight": "200g"}

@@ -93,10 +93,6 @@ Page({
     wx.navigateTo({ url: '/pages/checkout/index' })
   },
 
-  goAdmin () {
-    wx.navigateTo({ url: '/pages/admin/index' })
-  },
-
   initShop () {
     const self = this
     wx.showModal({

@@ -17,7 +17,7 @@
         <view wx:else class="thumb ph">{{item.initial}}</view>
         <view class="item-main">
           <view class="item-name">{{item.name}}</view>
-          <view class="item-unit">{{item.priceText}} / {{item.unit}}</view>
+          <view class="item-unit">{{item.priceText}} / {{item.unit}}<text wx:if="{{item.weight}}"> · {{item.weight}}</text></view>
           <view class="item-bottom">
             <view class="qty">
               <view class="qty-btn" data-i="{{index}}" bindtap="minus">−</view>

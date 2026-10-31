@@ -50,16 +50,14 @@
           <view class="row-price">
             <text class="t-price">{{item.priceText}}</text>
             <text class="unit">/{{item.unit}}</text>
+            <text class="unit" wx:if="{{item.weight}}"> · {{item.weight}}</text>
           </view>
           <view class="add" catchtap="addCart" data-id="{{item._id}}">加入清单</view>
         </view>
       </view>
     </view>
 
-    <view class="empty" wx:if="{{!list.length}}">
-      <block wx:if="{{isAdmin}}">还没有商品。点下面的「卖家工具 → 商品」，把老家有什么加进来。</block>
-      <block wx:else>还没有上架的东西，过两天再来看看。</block>
-    </view>
+    <view class="empty" wx:if="{{!list.length}}">还没有上架的东西，过两天再来看看。</view>
   </view>
 
   <!-- 清单 -->
@@ -71,7 +69,5 @@
     <view class="cartbar-btn" bindtap="goCheckout">清单</view>
   </view>
 
-  <view class="admin-entry" wx:if="{{isAdmin}}" bindtap="goAdmin">卖家工具</view>
-
-  <view class="foot">价格与库存仅供参考，最终以微信确认的为准</view>
+  <view class="foot">价格与重量仅供参考，最终以微信确认的为准</view>
 </view>

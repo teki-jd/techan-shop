@@ -1,6 +1,16 @@
 const app = getApp()
 const api = require('../../utils/api')
 
+// 老数据把重量写在单位里，比如「袋(250g)」，这里拆成 单位 + 重量
+function splitUnit (unit, weight) {
+  const u = String(unit || '').trim()
+  const w = String(weight || '').trim()
+  if (w) return { unit: u || '袋', weight: w }
+  const m = u.match(/^([^(（]+)[(（]([^)）]+)[)）]$/)
+  if (m) return { unit: m[1].trim() || '袋', weight: m[2].trim() }
+  return { unit: u || '袋', weight: '' }
+}
+
 Page({
   data: {
     id: '',
@@ -9,12 +19,13 @@ Page({
     cats: [],
     catNames: [],
     catIndex: 0,
+    unitOptions: ['袋', '盒', '瓶', '箱', '份', '斤'],
     p: {
       name: '',
       catId: '',
       price: '',
-      unit: '份',
-      stock: '',
+      unit: '袋',
+      weight: '',
       desc: '',
       cover: '',
       images: [],
@@ -39,12 +50,13 @@ Page({
         if (id) {
           const hit = (d.products || []).find(function (x) { return x._id === id })
           if (hit) {
+            const uw = splitUnit(hit.unit, hit.weight)
             p = {
               name: hit.name || '',
               catId: hit.catId || '',
               price: hit.price === undefined ? '' : String(hit.price),
-              unit: hit.unit || '份',
-              stock: hit.stock === null || hit.stock === undefined ? '' : String(hit.stock),
+              unit: uw.unit,
+              weight: uw.weight,
               desc: hit.desc || '',
               cover: hit.cover || '',
               images: hit.images || [],
@@ -80,6 +92,10 @@ Page({
 
   onSale (e) {
     this.setData({ 'p.onSale': e.detail.value })
+  },
+
+  pickUnit (e) {
+    this.setData({ 'p.unit': e.currentTarget.dataset.u })
   },
 
   pickCover () {
@@ -154,13 +170,15 @@ Page({
       .filter(Boolean)
       .slice(0, 6)
 
+    const uw = splitUnit(p.unit, p.weight)
+
     const payload = {
       _id: this.data.id || undefined,
       name: p.name,
       catId: p.catId,
       price: Number(p.price),
-      unit: p.unit,
-      stock: p.stock === '' ? null : Number(p.stock),
+      unit: uw.unit,
+      weight: uw.weight,
       desc: p.desc,
       cover: p.cover || p.images[0] || '',
       images: p.images,
