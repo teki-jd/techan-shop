@@ -16,6 +16,9 @@ node_modules/
 dist/
 *.zip
 
+# 上传脚本里写了本机密钥路径，别进仓库
+scripts/publish-mp.js
+
 # 系统垃圾
 .DS_Store
 Thumbs.db
