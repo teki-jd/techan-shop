@@ -27,6 +27,13 @@
     <view class="p">有任何问题直接微信找我，比在小程序里点来点去快。</view>
   </view>
 
+  <!-- 我的 ID：给店主开通管理权限用，管理员自己不显示 -->
+  <view class="card block" wx:if="{{!isAdmin && openid}}">
+    <view class="h2">我的 ID</view>
+    <view class="t-sub" style="margin:6rpx 0 12rpx;">点一下复制，发给店主，他用来给你开通管理权限</view>
+    <view class="openid" bindtap="copyOpenid">{{openid}}</view>
+  </view>
+
   <!-- 本地联调身份提示，只在 config.js 填了 devOpenid 时出现 -->
   <view class="devtip" wx:if="{{devWho}}">
     本地测试身份：{{devWho}}
