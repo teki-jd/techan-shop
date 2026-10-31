@@ -35,9 +35,13 @@ systemctl enable --now docker
 
 ```bash
 mkdir -p /var/www/techan && cd /var/www/techan
+mkdir -p data uploads
+chown -R 1000:1000 data uploads
 ```
 
 `data/`（商品、订单、店铺设置）和 `uploads/`（图片）会挂在这个目录下，**必须留着**，删了数据就没了。
+
+**这两行 `mkdir` + `chown` 不能省**：容器里的服务是用 `node` 用户（uid 1000）跑的，不是 root。如果这两个目录由 Docker 以 root 自动创建，容器就只能读、不能写，所有保存操作都会报 `EACCES: permission denied, open '/app/data/db.json.tmp'`——而且数据只留在内存里，容器一重启就全丢。
 
 ---
 
@@ -213,6 +217,8 @@ docker compose up -d
 | `docker pull` 报 `denied` | 镜像还是私有。让我把它设成公开，或在服务器上 `docker login ghcr.io` |
 | 域名打开 502 | nginx 反代没指向 `127.0.0.1:3000`，或容器没起 |
 | 首页显示「店铺：未初始化」 | 正常，等店主在小程序里点「初始化店铺数据」 |
+| 保存任何东西都报 `EACCES: permission denied, open '/app/data/db.json.tmp'` | 宿主机 `data` 目录属主不对。修：`docker exec -u 0 techan-shop chown -R node:node /app/data /app/public/uploads && docker restart techan-shop`。注意此时数据只在内存里，重启就没了，修完要重新录入 |
+| 改完 `db.json` 没生效 | 服务把数据缓存在内存，光改文件不行，`docker restart techan-shop` 才生效 |
 
 ---
 
