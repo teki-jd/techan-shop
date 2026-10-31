@@ -4,7 +4,7 @@
   <block wx:else>
     <view class="card block">
       <view class="form-row">
-        <view class="form-label">分类</view>
+        <view class="form-label">商品名</view>
         <input class="form-input" value="{{p.name}}" data-k="name" bindinput="onInput"
                placeholder="比如 野生黑木耳" placeholder-class="form-ph" />
       </view>
@@ -13,7 +13,7 @@
         <view class="form-label">分类</view>
         <picker class="form-input" mode="selector" range="{{catNames}}" value="{{catIndex}}" bindchange="onCat">
           <view class="{{catNames.length ? '' : 'form-ph'}}">
-            {{catNames.length ? catNames[catIndex] : '还没有分类，先去数据库建一个'}}
+            {{catNames.length ? catNames[catIndex] : '还没有分类，先到后台「商品分类」里加一个'}}
           </view>
         </picker>
       </view>

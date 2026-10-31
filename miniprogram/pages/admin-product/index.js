@@ -56,6 +56,8 @@ Page({
           }
         }
         self.setData({ loading: false, cats: cats, catNames: catNames, catIndex: idx, p: p })
+        // 新增时先替用户选上第一个分类，避免存成没有分类、切分类就看不到的条目
+        if (!p.catId && cats.length) self.setData({ 'p.catId': cats[0]._id })
       })
       .catch(function (e) {
         self.setData({ loading: false })
@@ -144,6 +146,7 @@ Page({
     const p = this.data.p
     if (!p.name.trim()) return wx.showToast({ title: '填条目名', icon: 'none' })
     if (String(p.price) === '' || isNaN(Number(p.price))) return wx.showToast({ title: '填价格', icon: 'none' })
+    if (this.data.cats.length && !p.catId) return wx.showToast({ title: '先选个分类', icon: 'none' })
 
     const tags = String(p.tagsText || '')
       .split(/[,，\s]+/)

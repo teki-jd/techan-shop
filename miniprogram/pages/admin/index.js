@@ -226,7 +226,8 @@ Page({
   saveCat (e) {
     const self = this
     const id = e.currentTarget.dataset.id
-    const name = String(this.data.catNames[id] || '').trim()
+    // 没改过输入框时 catNames 里没有这一项，回落到界面上原来的名字
+    const name = String(this.data.catNames[id] || e.currentTarget.dataset.name || '').trim()
     if (!name) return wx.showToast({ title: '分类名不能为空', icon: 'none' })
     api.call('adminSaveCategory', { id: id, name: name })
       .then(function () {
