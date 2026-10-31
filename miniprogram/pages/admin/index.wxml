@@ -79,43 +79,78 @@
       <button class="btn btn-pri" bindtap="editProduct" data-id="">＋ 新增商品</button>
     </view>
 
-    <!-- 分类管理 -->
+    <!-- 分类管理：默认收起，省出屏幕给商品列表 -->
     <view class="card block cat-card">
-      <view class="h2">商品分类</view>
-      <view class="t-sub" style="margin:4rpx 0 12rpx;">改名后直接点「保存」；删除前要先把分类下的商品移走</view>
-      <view class="cat-row" wx:for="{{cats}}" wx:key="_id">
-        <input class="form-input cat-input" value="{{item.name}}" data-id="{{item._id}}"
-               bindblur="onCatName" placeholder="分类名" placeholder-class="form-ph" />
-        <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" data-name="{{item.name}}" bindtap="saveCat">保存</view>
-        <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="delCat">删</view>
+      <view class="cat-head" bindtap="toggleCatPanel">
+        <view class="cat-head-l">
+          <text class="h2">商品分类</text>
+          <text class="cat-count">共 {{cats.length}} 个</text>
+        </view>
+        <text class="cat-toggle">{{catOpen ? '收起 ▲' : '管理 ▼'}}</text>
       </view>
-      <view class="cat-row">
-        <input class="form-input cat-input" value="{{newCat}}" data-k="newCat" bindinput="onCatInput"
-               placeholder="新分类名" placeholder-class="form-ph" />
-        <view class="btn btn-pri btn-sm" bindtap="addCat">添加</view>
-      </view>
+
+      <block wx:if="{{catOpen}}">
+        <view class="t-sub" style="margin:10rpx 0 12rpx;">改名后直接点「保存」；删除前要先把分类下的商品移走</view>
+        <view class="cat-row" wx:for="{{cats}}" wx:key="_id">
+          <input class="form-input cat-input" value="{{item.name}}" data-id="{{item._id}}"
+                 bindblur="onCatName" placeholder="分类名" placeholder-class="form-ph" />
+          <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" data-name="{{item.name}}" bindtap="saveCat">保存</view>
+          <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="delCat">删</view>
+        </view>
+        <view class="cat-row">
+          <input class="form-input cat-input" value="{{newCat}}" data-k="newCat" bindinput="onCatInput"
+                 placeholder="新分类名" placeholder-class="form-ph" />
+          <view class="btn btn-pri btn-sm" bindtap="addCat">添加</view>
+        </view>
+      </block>
     </view>
+
+    <!-- 搜索 -->
+    <view class="search-bar">
+      <input class="search-input" value="{{keyword}}" bindinput="onSearch" confirm-type="search"
+             placeholder="搜商品名、分类、标签" placeholder-class="form-ph" />
+      <text class="search-clear" wx:if="{{keyword}}" catchtap="clearSearch">清空</text>
+    </view>
+
+    <!-- 分类筛选 -->
+    <scroll-view class="filters" scroll-x enable-flex>
+      <view wx:for="{{catChips}}" wx:key="k" class="chip {{catFilter === item.k ? 'on' : ''}}"
+            data-k="{{item.k}}" bindtap="onCatFilter">
+        {{item.n}}<text class="c" wx:if="{{item.c}}">{{item.c}}</text>
+      </view>
+    </scroll-view>
 
     <view class="empty" wx:if="{{loading}}">加载中…</view>
     <view class="empty" wx:elif="{{err}}">{{err}}</view>
 
     <block wx:else>
-      <view class="card prow" wx:for="{{products}}" wx:key="_id">
-        <image wx:if="{{item.cover}}" class="pthumb" src="{{item.cover}}" mode="aspectFill" />
-        <view wx:else class="pthumb ph">{{item.initial}}</view>
-        <view class="pmain">
-          <view class="pname">{{item.name}}</view>
-          <view class="pmeta">{{item.catName || '未分类'}} · ¥{{item.priceText}}/{{item.unit}}<text wx:if="{{item.weight}}"> · {{item.weight}}</text></view>
-          <view class="prow-btns">
-            <view class="btn btn-ghost btn-sm" data-id="{{item._id}}" bindtap="editProduct">编辑</view>
-            <view class="switch-wrap">
-              <text class="switch-label">{{item.onSale === false ? '已隐藏' : '在售'}}</text>
-              <switch checked="{{item.onSale !== false}}" color="#B4472E" data-id="{{item._id}}" bindchange="toggleSale" />
+      <view class="list-sum" wx:if="{{shownCount}}">共 {{shownCount}} 个</view>
+
+      <view class="pgroup" wx:for="{{groups}}" wx:key="key" wx:for-item="g">
+        <view class="pgroup-head">
+          <text class="pgroup-name">{{g.name}}</text>
+          <text class="pgroup-count">{{g.products.length}}</text>
+        </view>
+        <view class="card prow" wx:for="{{g.products}}" wx:key="_id" data-id="{{item._id}}" bindtap="editProduct">
+          <image wx:if="{{item.cover}}" class="pthumb" src="{{item.cover}}" mode="aspectFill" />
+          <view wx:else class="pthumb ph">{{item.initial}}</view>
+          <view class="pmain">
+            <view class="pname">{{item.name}}</view>
+            <view class="pmeta">¥{{item.priceText}}/{{item.unit}}<text wx:if="{{item.weight}}"> · {{item.weight}}</text></view>
+            <view class="prow-btns">
+              <text class="pedit">编辑</text>
+              <view class="switch-wrap" catchtap="stopTap">
+                <text class="switch-label">{{item.onSale === false ? '已隐藏' : '在售'}}</text>
+                <switch checked="{{item.onSale !== false}}" color="#B4472E" data-id="{{item._id}}" bindchange="toggleSale" />
+              </view>
             </view>
           </view>
         </view>
       </view>
-      <view class="empty" wx:if="{{!products.length}}">还没有商品，点上面「新增商品」</view>
+
+      <view class="empty" wx:if="{{!shownCount}}">
+        {{products.length ? '没有符合条件的商品，换个词或点「全部」' : '还没有商品，点上面「新增商品」'}}
+      </view>
     </block>
   </block>
 

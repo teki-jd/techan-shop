@@ -25,11 +25,23 @@ Page({
     cats: [],
     catNames: {},
     newCat: '',
+    catOpen: false,
+    keyword: '',
+    catFilter: 'all',
+    catChips: [],
+    groups: [],
+    shownCount: 0,
     s: {}
   },
 
   onLoad () {
     this.loadOrders()
+  },
+
+  // 从编辑页回来时刷新，否则看到的是改之前的列表
+  onShow () {
+    if (this._inited) this.reload()
+    this._inited = true
   },
 
   onPullDownRefresh () {
@@ -185,12 +197,95 @@ Page({
               initial: (p.name || '特').slice(0, 1)
             })
           })
-        })
+        }, function () { self.applyFilter() })
       })
       .catch(function (e) {
         self.setData({ loading: false, err: e.message })
       })
   },
+
+  // 搜索关键字 + 分类条件 → 筛选条、分组列表。纯本地计算，不用请求
+  applyFilter () {
+    const self = this
+    const all = self.data.products || []
+    const cats = self.data.cats || []
+    const kw = String(self.data.keyword || '').trim().toLowerCase()
+
+    const catNameOf = {}
+    cats.forEach(function (c) { catNameOf[c._id] = c.name })
+
+    // 先按关键字过滤；分类上的数字也跟着变，免得搜出来的数量和列表对不上
+    const base = kw ? all.filter(function (p) {
+      const catName = p.catName || catNameOf[p.catId] || '未分类'
+      const tags = (p.tags || []).join(' ')
+      return (p.name || '').toLowerCase().indexOf(kw) > -1 ||
+        catName.toLowerCase().indexOf(kw) > -1 ||
+        tags.toLowerCase().indexOf(kw) > -1
+    }) : all
+
+    const chips = [
+      { k: 'all', n: '全部', c: base.length },
+      { k: 'none', n: '未分类', c: base.filter(function (p) { return !p.catId }).length }
+    ]
+    cats.forEach(function (c) {
+      chips.push({ k: c._id, n: c.name, c: base.filter(function (p) { return p.catId === c._id }).length })
+    })
+    const hiddenCount = base.filter(function (p) { return p.onSale === false }).length
+    if (hiddenCount) chips.push({ k: 'hidden', n: '已隐藏', c: hiddenCount })
+
+    // 选中的分类被删掉时自动回到「全部」
+    let active = self.data.catFilter || 'all'
+    if (active !== 'all' && active !== 'none' && active !== 'hidden' && !catNameOf[active]) active = 'all'
+
+    let list = base
+    if (active === 'none') list = base.filter(function (p) { return !p.catId })
+    else if (active === 'hidden') list = base.filter(function (p) { return p.onSale === false })
+    else if (active !== 'all') list = base.filter(function (p) { return p.catId === active })
+
+    // 按分类分组，顺序跟分类列表一致，没分类的排最后
+    const groups = []
+    const bucket = {}
+    cats.forEach(function (c) {
+      const g = { key: c._id, name: c.name, products: [] }
+      bucket[c._id] = g
+      groups.push(g)
+    })
+    const noneGroup = { key: '_none', name: '未分类', products: [] }
+    list.forEach(function (p) {
+      const g = bucket[p.catId] || noneGroup
+      g.products.push(p)
+    })
+    if (noneGroup.products.length) groups.push(noneGroup)
+
+    self.setData({
+      catChips: chips,
+      catFilter: active,
+      groups: groups.filter(function (g) { return g.products.length }),
+      shownCount: list.length
+    })
+  },
+
+  toggleCatPanel () {
+    this.setData({ catOpen: !this.data.catOpen })
+  },
+
+  onSearch (e) {
+    const self = this
+    this.setData({ keyword: e.detail.value }, function () { self.applyFilter() })
+  },
+
+  clearSearch () {
+    const self = this
+    this.setData({ keyword: '' }, function () { self.applyFilter() })
+  },
+
+  onCatFilter (e) {
+    const self = this
+    this.setData({ catFilter: e.currentTarget.dataset.k }, function () { self.applyFilter() })
+  },
+
+  // 让「在售」开关不触发行点击（整行点了是进编辑）
+  stopTap () {},
 
   toggleSale (e) {
     const self = this
@@ -210,10 +305,6 @@ Page({
   editProduct (e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: '/pages/admin-product/index?id=' + (id || '') })
-  },
-
-  copyId (e) {
-    wx.setClipboardData({ data: String(e.currentTarget.dataset.id || '') })
   },
 
   /* ---------------------------------------------------- 分类管理 */
@@ -314,11 +405,5 @@ Page({
         wx.hideLoading()
         wx.showModal({ title: '失败', content: e.message, showCancel: false })
       })
-  },
-
-  copyOpenid () {
-    const o = app.globalData.openid || (app.globalData.user && app.globalData.user._id) || ''
-    if (!o) return wx.showToast({ title: '去「我的」页复制', icon: 'none' })
-    wx.setClipboardData({ data: String(o) })
   }
 })

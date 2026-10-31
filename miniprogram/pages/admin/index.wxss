@@ -161,6 +161,41 @@
 .p { font-size: 23rpx; color: #6B6259; line-height: 1.8; margin-top: 10rpx; }
 
 /* 分类管理 */
-.cat-card { margin-bottom: 20rpx; }
+.cat-card { margin-bottom: 16rpx; }
+.cat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48rpx;
+}
+.cat-head-l { display: flex; align-items: baseline; gap: 12rpx; }
+.cat-count { font-size: 22rpx; color: #A9A096; }
+.cat-toggle { font-size: 23rpx; color: #B4472E; }
 .cat-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 12rpx; }
 .cat-input { flex: 1; }
+
+/* 商品搜索 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin: 0 24rpx 4rpx;
+  padding: 0 24rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #F0E6D9;
+  border-radius: 28rpx;
+}
+.search-input { flex: 1; height: 74rpx; font-size: 26rpx; }
+.search-clear { font-size: 23rpx; color: #B4472E; padding-left: 16rpx; }
+
+/* 商品分组 */
+.list-sum { padding: 2rpx 28rpx 8rpx; font-size: 21rpx; color: #B0A79C; }
+.pgroup { margin-bottom: 4rpx; }
+.pgroup-head {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 14rpx 28rpx 10rpx;
+}
+.pgroup-name { font-size: 24rpx; color: #6B6259; font-weight: 600; }
+.pgroup-count { font-size: 20rpx; color: #A9A096; }
+.pedit { font-size: 22rpx; color: #B4472E; }

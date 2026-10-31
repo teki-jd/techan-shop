@@ -7,7 +7,6 @@ Page({
     s: {},
     isAdmin: false,
     needInit: false,
-    openid: '',
     // 仅本地联调时显示：当前假身份
     devWho: config.backend === 'http' ? (config.devOpenid || '') : ''
   },
@@ -18,18 +17,9 @@ Page({
       self.setData({
         s: g.settings || {},
         isAdmin: !!g.isAdmin,
-        needInit: !!g.needInit,
-        openid: g.openid || ''
+        needInit: !!g.needInit
       })
     }).catch(function () {})
-  },
-
-  copyOpenid () {
-    if (!this.data.openid) return
-    wx.setClipboardData({
-      data: this.data.openid,
-      success: function () { wx.showToast({ title: '已复制，发给店主', icon: 'none' }) }
-    })
   },
 
   goAdmin () {
