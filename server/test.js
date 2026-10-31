@@ -188,6 +188,23 @@ async function call (token, action, data) {
   r = await call(buyer, 'upload', { data: png })
   ok(!r.ok, '非管理员不能上传')
 
+  // 超过 8MB 请求体：要能收到 413 的明确提示，而不是连接被掐断（客户端只会看到「网络不通」）
+  let bigRes = null
+  try {
+    bigRes = await fetch(BASE + '/api', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', Authorization: 'Bearer ' + boss },
+      body: JSON.stringify({ action: 'upload', data: 'data:image/jpeg;base64,' + 'A'.repeat(8 * 1024 * 1024) })
+    })
+  } catch (e) {
+    bigRes = null
+  }
+  ok(bigRes && bigRes.status === 413, '超大请求返回 413，不是连接被断', bigRes && bigRes.status)
+  if (bigRes) {
+    const j = await bigRes.json().catch(function () { return {} })
+    ok(/上限/.test(j.msg || ''), '413 里带能看懂的提示', j)
+  }
+
   console.log('\n============================')
   console.log('通过 ' + pass + ' 项，失败 ' + fail + ' 项')
   process.exit(fail ? 1 : 0)

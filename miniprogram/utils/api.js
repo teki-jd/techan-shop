@@ -156,16 +156,37 @@ function httpCall (action, data, retried) {
   })
 }
 
+/* 单张图上限：服务端按解码后的字节算是 6MB，
+   但图片要转 base64 再塞进 JSON（体积 ×4/3），
+   5MB 的图已经压成约 6.7MB 的请求体。这里卡 5MB，留出余量，
+   而且能在本地就给出人话提示，不用等服务器报错。 */
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024
+
 function httpUpload (paths) {
   const fs = wx.getFileSystemManager()
   const base = config.httpBase.replace(/\/+$/, '')
   const list = (paths || []).map(function (p) {
     return new Promise(function (resolve, reject) {
+      // 先量体积：超了就在本地拦下来，提示「图太大」而不是「网络不通」
+      let size = 0
+      try {
+        const st = fs.statSync(p)
+        size = (st && st.size) || 0
+      } catch (e) { /* 量不到就交给后面的读取去报错 */ }
+      if (size > MAX_IMAGE_BYTES) {
+        const mb = (size / 1024 / 1024).toFixed(1)
+        return reject(new Error('这张图 ' + mb + 'MB，超过单张 5MB 的上限，换一张重新选'))
+      }
+
       let b64
       try {
         b64 = fs.readFileSync(p, 'base64')
       } catch (e) {
         return reject(new Error('读取本地图片失败'))
+      }
+      // 兜底：万一 statSync 拿不到体积，用它解码后的大小再拦一次
+      if (b64.length * 0.75 > MAX_IMAGE_BYTES) {
+        return reject(new Error('这张图太大了（超过单张 5MB），换一张重新选'))
       }
       const ext = (p.match(/\.(\w+)$/) || [, 'jpg'])[1].toLowerCase()
       httpCall('upload', { data: 'data:image/' + ext + ';base64,' + b64, ext: ext })

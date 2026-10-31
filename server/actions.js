@@ -383,7 +383,7 @@ function upload (openid, e) {
   const ext = (m && m[1] === 'jpeg') ? 'jpg' : ((m && m[1]) || String(e.ext || 'jpg').replace(/[^a-z0-9]/gi, ''))
   if (!raw) throw new Error('没有收到图片数据')
   const buf = Buffer.from(raw, 'base64')
-  if (buf.length > 6 * 1024 * 1024) throw new Error('图片太大（上限 6MB）')
+  if (buf.length > 6 * 1024 * 1024) throw new Error('图片太大（单张上限 6MB）')
   const name = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
   fs.mkdirSync(UPLOAD_DIR, { recursive: true })
   fs.writeFileSync(path.join(UPLOAD_DIR, name), buf)

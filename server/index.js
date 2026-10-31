@@ -61,17 +61,28 @@ const bad = function (res, code, msg) { sendJson(res, code, { ok: false, msg: ms
 function readBody (req) {
   return new Promise(function (resolve, reject) {
     let size = 0
+    let over = false
     const chunks = []
     req.on('data', function (c) {
       size += c.length
-      if (size > MAX_BODY) {
-        reject(new Error('请求体太大（上限 8MB）'))
-        req.destroy()
+      if (!over && size > MAX_BODY) {
+        over = true
+        chunks.length = 0 // 已经收的也丢掉，不留着占内存
+        const err = new Error('内容太大（上限 8MB；图片转 base64 会放大约三分之一，原图请小于 6MB）')
+        err.statusCode = 413
+        reject(err)
+      }
+      if (over) {
+        // 故意不掐连接：继续把客户端发来的数据读完丢弃，
+        // 这样它才能收到上面那 413，而不是「连接被重置」。
+        // 但设个上限，防止有人无限往里灌。
+        if (size > MAX_BODY * 4) req.destroy()
         return
       }
       chunks.push(c)
     })
     req.on('end', function () {
+      if (over) return
       if (!chunks.length) return resolve({})
       try {
         resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')))
@@ -79,7 +90,9 @@ function readBody (req) {
         reject(new Error('请求体不是合法 JSON'))
       }
     })
-    req.on('error', reject)
+    req.on('error', function (e) {
+      if (!over) reject(e)
+    })
   })
 }
 
@@ -137,7 +150,7 @@ const server = http.createServer(async function (req, res) {
   /* ---------------- 登录：code 换 openid，发一个 token ---------------- */
   if (p === '/api/login' && req.method === 'POST') {
     let body
-    try { body = await readBody(req) } catch (e) { return bad(res, 400, e.message) }
+    try { body = await readBody(req) } catch (e) { return bad(res, e.statusCode || 400, e.message) }
     try {
       let openid
       if (DEV && body.devOpenid) {
@@ -156,7 +169,7 @@ const server = http.createServer(async function (req, res) {
   /* ---------------- 业务接口 ---------------- */
   if (p === '/api' && req.method === 'POST') {
     let body
-    try { body = await readBody(req) } catch (e) { return bad(res, 400, e.message) }
+    try { body = await readBody(req) } catch (e) { return bad(res, e.statusCode || 400, e.message) }
 
     const h = req.headers.authorization || ''
     const token = h.replace(/^Bearer\s+/i, '')
