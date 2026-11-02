@@ -1,21 +1,23 @@
 # 老家特产小铺 · 服务器端（只有接口，没有网页界面）
-# 用法：把这个文件和 techan.env 放在同一目录，然后 docker compose up -d
+# 这份是当前线上实际在用的配置（部署目录 /app/mjd-tcd），改这里要跟线上保持一致
+#
+# 用法：把这个文件和 .env 放在同一目录，然后 docker compose up -d
 #
 # 说明：
-# - 只监听宿主机 127.0.0.1:3000，对外由 nginx 转 443
+# - 只监听宿主机 127.0.0.1:3001，对外由 nginx 转 443
 # - data 和 uploads 两个目录必须在宿主机上，容器重建不会丢
-# - HOST 必须显式写 0.0.0.0：techan.env 里如果沿用模板的 127.0.0.1，
+# - HOST 必须显式写 0.0.0.0：.env 里如果沿用模板的 127.0.0.1，
 #   容器就只监听自己的回环，宿主机映射的端口永远连不上
 
 services:
-  app:
+  mjd-tcd-shop:
     image: ghcr.io/teki-jd/techan-shop:latest
-    container_name: techan-shop
+    container_name: mjd-tcd-shop
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3000"
     env_file:
-      - ./techan.env
+      - ./.env
     environment:
       HOST: 0.0.0.0
       PORT: "3000"

@@ -31,11 +31,11 @@
 
 镜像已经构建好，不用编译、不用 `npm install`：
 
-1. `mkdir -p /var/www/techan && cd /var/www/techan`
-2. 写 `techan.env`：`APPID` / `APPSECRET` / `TOKEN_SECRET`，`DEV_MODE=0`，`HOST=0.0.0.0`
+1. `mkdir -p /app/mjd-tcd && cd /app/mjd-tcd`（线上已按此目录部署，容器名 `mjd-tcd-shop`，宿主机端口 `3001`）
+2. 写 `.env`：`APPID` / `APPSECRET` / `TOKEN_SECRET`，`DEV_MODE=0`，`HOST=0.0.0.0`
 3. 下载仓库里的 `docker-compose.yml`
-4. `docker compose up -d` → `curl http://127.0.0.1:3000/api/health`
-5. nginx 反代 `127.0.0.1:3000` + `certbot --nginx -d mjd-tcd.tearth.cn --redirect`
+4. `docker compose up -d` → `curl http://127.0.0.1:3001/api/health`
+5. nginx 反代 `127.0.0.1:3001` + `certbot --nginx -d mjd-tcd.tearth.cn --redirect`
 6. 逐条核对第十节的回执清单
 
 服务器装不了 docker 才走 `DEPLOY.md`（传源码 + pm2），那条路多几步，结果一样。
@@ -54,7 +54,7 @@
 | 把 `DEV_MODE` 设成 `1` | 开着等于任何人能冒充管理员，只在本地测接口时短暂开 |
 | 加网页后台 / 登录页 / SPA | 没有网页版，店主明确不要 |
 | 动 `data/` 里的文件 | 那是真实数据，`db.json` 手工改会坏 |
-| 把 `techan.env` 发群里或截图 | 里面有 AppSecret |
+| 把 `.env` 发群里或截图 | 里面有 AppSecret |
 
 ## 五、自检
 
@@ -63,7 +63,7 @@
 ```bash
 docker compose ps
 docker compose logs --tail 30 --no-color
-curl -s http://127.0.0.1:3000/api/health
+curl -s http://127.0.0.1:3001/api/health
 curl -s https://mjd-tcd.tearth.cn/api/health
 ```
 
@@ -80,7 +80,7 @@ sh verify.sh
 ```
 1. docker compose ps 的输出
 2. docker compose logs --tail 30 --no-color 的输出
-3. curl -s http://127.0.0.1:3000/api/health 的返回
+3. curl -s http://127.0.0.1:3001/api/health 的返回
 4. curl -s https://mjd-tcd.tearth.cn/api/health 的返回
 5. certbot certificates | grep -A2 tearth
 ```
